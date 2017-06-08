@@ -8,7 +8,7 @@ declare let OktaAuth: any;
 
 @Injectable()
 export class OktaService {
-  private user$: Observable<any | boolean>;
+  public user$: Observable<any | boolean>;
 
   constructor(
     private oauthService: OAuthService, 
@@ -37,8 +37,6 @@ export class OktaService {
             .then((tokens) => {
               this.user$ = response.user;
               this.oauthService.processIdToken(tokens[0].idToken, tokens[1].accessToken);
-              let some = this.oauthService.getIdToken();
-              debugger;
               this.router.navigate(['beer-list']);
             })
             .catch(error => {

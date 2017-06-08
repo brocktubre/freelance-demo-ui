@@ -12,12 +12,12 @@ import 'rxjs/add/operator/map';
 export class AuthorizedGuard implements CanActivate {
     constructor(private router: Router,
         private logger: Logger, 
-        private oauthService: OAuthService) {}
+        private oauthService: OAuthService,
+        private OktaService: OktaService) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         this.logger.debug("Inside AuthorizedGuard");
-        let userLoggedIn = this.oauthService.getAccessToken();
-        debugger;
+        let userLoggedIn = false;
         if (userLoggedIn) {
             return true;
         }
