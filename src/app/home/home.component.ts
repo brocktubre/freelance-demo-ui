@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { OktaService } from './../shared/auth/okta.service';
+import { Logger } from 'angular2-logger/app/core/logger';
+import { Component, OnInit } from '@angular/core';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { Router } from '@angular/router';
 declare let OktaAuth: any;
@@ -8,42 +10,23 @@ declare let OktaAuth: any;
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css'],
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit{
   username: String;
   password: String;
+  loginFailed: Boolean = false;
 
-  constructor(private oauthService: OAuthService, private router: Router) {
+  constructor(
+    private oauthService: OAuthService, 
+    private router: Router, 
+    private logger: Logger,
+    private oktaService: OktaService) {
+  }
+
+  ngOnInit(){
+    this.logger.info('HomeComponent init.. ');
   }
 
   loginWithPassword() {
-    this.oauthService.createAndSaveNonce().then(nonce => {
-      const authClient = new OktaAuth({
-        url: 'https://dev-480041.oktapreview.com'
-      });
-      authClient.signIn({
-        username: this.username,
-        password: this.password
-      }).then((response) => {
-        if (response.status === 'SUCCESS') {
-          authClient.token.getWithoutPrompt({
-            clientId: 'QHrdxhOySHaVlVcrDTAA',
-            responseType: ['id_token', 'token'],
-            scopes: ['openid', 'profile', 'email'],
-            sessionToken: response.sessionToken,
-            nonce: nonce,
-            redirectUri: window.location.origin
-          })
-            .then((tokens) => {
-              this.oauthService.processIdToken(tokens[0].idToken, tokens[1].accessToken);
-              this.router.navigate(['/home']);
-            })
-            .catch(error => console.error(error));
-        } else {
-          throw new Error('We cannot handle the ' + response.status + ' status');
-        }
-      }).fail(function (err) {
-        console.error(err);
-      });
-    });
+    this.oktaService.login(this.username, this.password);
   }
 }
