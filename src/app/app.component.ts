@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { Account, Stormpath } from 'angular-stormpath';
 import { Observable } from "rxjs/Observable";
 
 @Component({
@@ -9,13 +8,8 @@ import { Observable } from "rxjs/Observable";
 })
 
 export class AppComponent {
-  user$: Observable<Account | boolean>;
- 
-  constructor(private stormpath: Stormpath) {
-    this.user$ = this.stormpath.user$;
-  }
- 
-  logout(): void {
-    this.stormpath.logout();
+  
+  constructor(){
+    
   }
 }
