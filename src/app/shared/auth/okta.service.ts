@@ -8,15 +8,26 @@ declare let OktaAuth: any;
 
 @Injectable()
 export class OktaService {
-  public user$: Observable<any | boolean>;
 
   constructor(
     private oauthService: OAuthService, 
     private router: Router, 
     private logger: Logger,
-  ) { }  
+  ) { }
 
-  login(un: String, pw: String){
+  login() {
+    this.oauthService.initImplicitFlow();
+  }
+
+  get givenName() {
+    const claims = this.oauthService.getIdentityClaims();
+    if (!claims) {
+      return null;
+    }
+    return claims.name;
+  }
+
+  loginWithPassword(un: String, pw: String){
     this.oauthService.createAndSaveNonce().then(nonce => {
       const authClient = new OktaAuth({
         url: 'https://dev-480041.oktapreview.com'
@@ -35,8 +46,9 @@ export class OktaService {
             redirectUri: window.location.origin
           })
             .then((tokens) => {
-              this.user$ = response.user;
               this.oauthService.processIdToken(tokens[0].idToken, tokens[1].accessToken);
+              let hasVToken = this.oauthService.hasValidIdToken();
+              debugger;
               this.router.navigate(['beer-list']);
             })
             .catch(error => {

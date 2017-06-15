@@ -22,7 +22,7 @@ export class BeerListComponent implements OnInit {
         this.beers = data;
       },
       error => this.logger.error(error)
-    )
+    );
   }
 
   logout(){

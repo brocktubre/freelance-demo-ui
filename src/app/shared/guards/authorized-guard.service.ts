@@ -13,12 +13,11 @@ export class AuthorizedGuard implements CanActivate {
     constructor(private router: Router,
         private logger: Logger, 
         private oauthService: OAuthService,
-        private OktaService: OktaService) {}
+        private oktaService: OktaService) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         this.logger.debug("Inside AuthorizedGuard");
-        let userLoggedIn = false;
-        if (userLoggedIn) {
+        if (this.oktaService.givenName) {
             return true;
         }
 

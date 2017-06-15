@@ -27,6 +27,6 @@ export class HomeComponent implements OnInit{
   }
 
   loginWithPassword() {
-    this.oktaService.login(this.username, this.password);
+    this.oktaService.loginWithPassword(this.username, this.password);
   }
 }
